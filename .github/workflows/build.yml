@@ -1,0 +1,37 @@
+name: Compile Kernel Module
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Cross-Compiler & Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libssl-dev bc bison flex gcc-aarch64-linux-gnu
+
+      - name: Download Kernel Source (v4.14.357-openela)
+        run: |
+          git clone --depth 1 --branch v4.14.357-openela https://github.com/openela/kernel.git kernel_src
+
+      - name: Prepare Kernel Headers for Compilation
+        run: |
+          cd kernel_src
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- scripts prepare
+
+      - name: Build Module
+        run: |
+          cd module
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KDIR=../kernel_src
+
+      - name: Upload Compiled .ko Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-kernel-module
+          path: module/*.ko
+          
