@@ -28,12 +28,13 @@ jobs:
       - name: Build Module
         run: |
           cd module
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
+          make
 
       - name: Upload Compiled .ko Artifact
         uses: actions/upload-artifact@v4
         with:
           name: compiled-kernel-module
           path: module/*.ko
+          
           
           
