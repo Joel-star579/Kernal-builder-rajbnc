@@ -36,5 +36,3 @@ jobs:
           name: compiled-kernel-module
           path: module/*.ko
           
-          
-          
