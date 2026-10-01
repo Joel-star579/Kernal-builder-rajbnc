@@ -15,8 +15,9 @@ jobs:
           sudo apt-get install -y build-essential libssl-dev bc bison flex gcc-aarch64-linux-gnu
 
       - name: Download Kernel Source (v4.14.357-openela)
-        run: |
-          git clone --depth 1 --branch v4.14.357-openela https://github.com/openela/kernel.git kernel_src
+        run: |git clone --depth 1 --branch v4.14.357-openela https://github.com/openela/kernel-lts.git kernel_src
+        
+          
 
       - name: Prepare Kernel Headers for Compilation
         run: |
