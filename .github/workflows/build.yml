@@ -12,30 +12,28 @@ jobs:
       - name: Install Cross-Compiler & Tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential libssl-dev bc bison flex gcc-aarch64-linux-gnu
+          sudo apt-get install -y build-essential gcc-aarch64-linux-gnu
 
       - name: Download Kernel Source (v4.14.357-openela)
-          - name: Download Kernel Source (v4.14.357-openela)
-   run: |
-     git clone --depth 1 --branch v4.14.357-openela https://github.com/openela/kernel-lts.git kernel_src
-     
-        
-          
+        run: |
+          git clone --depth 1 --branch v4.14.357-openela https://github.com/openela/kernel-lts.git kernel_src
 
       - name: Prepare Kernel Headers for Compilation
         run: |
           cd kernel_src
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- defconfig
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- scripts prepare
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- olddefconfig
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- prepare
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- scripts
 
       - name: Build Module
         run: |
           cd module
-          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- KDIR=../kernel_src
+          make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu-
 
       - name: Upload Compiled .ko Artifact
         uses: actions/upload-artifact@v4
         with:
           name: compiled-kernel-module
           path: module/*.ko
+          
           
